@@ -41,7 +41,7 @@ public class SwaggerConfig {
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfo("API do curso Spring Boot", "Esta API foi criada com fins didáticos", "Versão 1.0", "",
+		return new ApiInfo("Spring Boot REST API", "Esta API foi criada com fins didáticos", "Versão 1.0", "",
 				new Contact("Fernando Oliveira", "https://github.com/fernandoguide", "fernandoguide2014@gmail.com"),
 				"Permitido uso para estudantes", "", Collections.emptyList());
 	}
