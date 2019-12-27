@@ -22,58 +22,65 @@ import br.com.fernando.crud.controller.exception.ResourceNotFoundException;
 import br.com.fernando.crud.model.Employee;
 import br.com.fernando.crud.repository.EmployeeRepository;
 import br.com.fernando.crud.service.SequenceGeneratorService;
+import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1")
 public class EmployeeController {
-  @Autowired
-  private EmployeeRepository employeeRepository;
 
-  @Autowired
-  private SequenceGeneratorService sequenceGeneratorService;
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
-  @GetMapping("/employees")
-  public List < Employee > getAllEmployees() {
-      return employeeRepository.findAll();
-  }
+	@Autowired
+	private SequenceGeneratorService sequenceGeneratorService;
 
-  @GetMapping("/employees/{id}")
-  public ResponseEntity < Employee > getEmployeeById(@PathVariable(value = "id") Long employeeId)
-  throws ResourceNotFoundException {
-      Employee employee = employeeRepository.findById(employeeId)
-          .orElseThrow(() -> new ResourceNotFoundException("Employee não encontrado com o  id: " + employeeId));
-      return ResponseEntity.ok().body(employee);
-  }
+	@ApiOperation(value = "Exibe todos os Funcionario")
+	@GetMapping("/employees")
+	public List<Employee> getAllEmployees() {
+		return employeeRepository.findAll();
+	}
 
-  @PostMapping("/employees")
-  public Employee createEmployee(@Valid @RequestBody Employee employee) {
-      employee.setId(sequenceGeneratorService.generateSequence(Employee.SEQUENCE_NAME));
-      return employeeRepository.save(employee);
-  }
+	@ApiOperation(value = "Busca por id")
+	@GetMapping("/employees/{id}")
+	public ResponseEntity<Employee> getEmployeeById(@PathVariable(value = "id") Long employeeId)
+			throws ResourceNotFoundException {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee não encontrado com o  id: " + employeeId));
+		return ResponseEntity.ok().body(employee);
+	}
 
-  @PutMapping("/employees/{id}")
-  public ResponseEntity < Employee > updateEmployee(@PathVariable(value = "id") Long employeeId,
-      @Valid @RequestBody Employee employeeDetails) throws ResourceNotFoundException {
-      Employee employee = employeeRepository.findById(employeeId)
-          .orElseThrow(() -> new ResourceNotFoundException("Employee não encontrado com o  id: " + employeeId));
+	@ApiOperation(value = "Insere Funcionario")
+	@PostMapping("/employees")
+	public Employee createEmployee(@Valid @RequestBody Employee employee) {
+		employee.setId(sequenceGeneratorService.generateSequence(Employee.SEQUENCE_NAME));
+		return employeeRepository.save(employee);
+	}
 
-      employee.setEmailId(employeeDetails.getEmailId());
-      employee.setLastName(employeeDetails.getLastName());
-      employee.setFirstName(employeeDetails.getFirstName());
-      final Employee updatedEmployee = employeeRepository.save(employee);
-      return ResponseEntity.ok(updatedEmployee);
-  }
+	@ApiOperation(value = "Altera Funcionario por id")
+	@PutMapping("/employees/{id}")
+	public ResponseEntity<Employee> updateEmployee(@PathVariable(value = "id") Long employeeId,
+			@Valid @RequestBody Employee employeeDetails) throws ResourceNotFoundException {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee não encontrado com o  id: " + employeeId));
 
-  @DeleteMapping("/employees/{id}")
-  public Map < String, Boolean > deleteEmployee(@PathVariable(value = "id") Long employeeId)
-  throws ResourceNotFoundException {
-      Employee employee = employeeRepository.findById(employeeId)
-          .orElseThrow(() -> new ResourceNotFoundException("Employee não encontrado com o  id: " + employeeId));
+		employee.setEmailId(employeeDetails.getEmailId());
+		employee.setLastName(employeeDetails.getLastName());
+		employee.setFirstName(employeeDetails.getFirstName());
+		final Employee updatedEmployee = employeeRepository.save(employee);
+		return ResponseEntity.ok(updatedEmployee);
+	}
 
-      employeeRepository.delete(employee);
-      Map < String, Boolean > response = new HashMap < > ();
-      response.put("Excluido com sucesso", Boolean.TRUE);
-      return response;
-  }
+	@ApiOperation(value = "Exclui Funcionario por id")
+	@DeleteMapping("/employees/{id}")
+	public Map<String, Boolean> deleteEmployee(@PathVariable(value = "id") Long employeeId)
+			throws ResourceNotFoundException {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee não encontrado com o  id: " + employeeId));
+
+		employeeRepository.delete(employee);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("Excluido com sucesso", Boolean.TRUE);
+		return response;
+	}
 }
