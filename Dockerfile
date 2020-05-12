@@ -1,4 +1,4 @@
-  
+ 
 # For Java 8, try this
 
 # FROM openjdk:8-jdk-alpine
